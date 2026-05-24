@@ -43,3 +43,18 @@
 3. Import `client/` into Vercel and set the frontend env vars.
 4. Set the backend `CLIENT_URL` to the Vercel domain.
 5. Re-run the smoke checks above.
+
+## 7) GitHub Actions-based deploy (optional)
+
+This repo includes two workflows that will attempt to deploy automatically on push to `main`:
+
+- `.github/workflows/deploy-render.yml` — triggers a Render deploy via the Render API. Requires repository secrets:
+  - `RENDER_API_KEY` — Render service API key
+  - `RENDER_SERVICE_ID` — The Render service id for the backend
+
+- `.github/workflows/deploy-vercel.yml` — builds the client and deploys to Vercel using the Vercel Action. Requires repository secrets:
+  - `VERCEL_TOKEN`
+  - `VERCEL_ORG_ID`
+  - `VERCEL_PROJECT_ID`
+
+Add the above secrets under GitHub → Settings → Secrets for the repository to enable CI-based deploys.
