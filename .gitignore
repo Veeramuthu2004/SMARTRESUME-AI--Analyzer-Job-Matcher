@@ -26,6 +26,9 @@ uibot_*
 apitest*.txt
 test*.txt
 sample*.txt
+current_*.txt
 browser-test-*.pdf
 *.pdf
 *.png
+uiflow-*
+uibot-*
