@@ -1,7 +1,9 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:5000/api",
+  baseURL:
+    import.meta.env.VITE_API_BASE_URL ||
+    "https://smartresume-ai-analyzer-job-matcher-1.onrender.com/api",
   // allow sending/receiving cookies for refresh-token flow
   withCredentials: true,
 });

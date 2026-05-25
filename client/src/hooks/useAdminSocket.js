@@ -9,7 +9,7 @@ export function useAdminSocket() {
       const token = localStorage.getItem("sra_access_token");
       const base = import.meta.env.VITE_API_BASE_URL
         ? import.meta.env.VITE_API_BASE_URL.replace(/\/api$/, "")
-        : window.location.origin;
+        : "https://smartresume-ai-analyzer-job-matcher-1.onrender.com";
 
       socket = io(base, {
         auth: { token },
