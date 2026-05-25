@@ -1,5 +1,5 @@
 /** @type {import('@playwright/test').PlaywrightTestConfig} */
-module.exports = {
+export default {
   testDir: "./tests",
   timeout: 30_000,
   expect: { timeout: 5000 },
