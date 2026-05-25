@@ -23,14 +23,25 @@ const allowedOrigins = Array.from(
   ),
 );
 
+const isAllowedCorsOrigin = (origin) => {
+  if (!origin) return true;
+  if (allowedOrigins.includes(origin)) return true;
+
+  try {
+    const url = new URL(origin);
+    return url.protocol === "https:" && url.hostname.endsWith(".vercel.app");
+  } catch {
+    return false;
+  }
+};
+
 // In development allow all origins to simplify local testing (dev tokens /
 // different dev ports). In production enforce a strict allowlist.
 const corsOptions =
   env.nodeEnv === "production"
     ? {
         origin: (origin, callback) => {
-          if (!origin || allowedOrigins.includes(origin))
-            return callback(null, true);
+          if (isAllowedCorsOrigin(origin)) return callback(null, true);
           return callback(new Error(`CORS blocked for origin ${origin}`));
         },
         credentials: true,
