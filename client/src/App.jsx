@@ -1,6 +1,6 @@
 import { Suspense, lazy } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AppShell } from "./components/layout/AppShell";
@@ -290,6 +290,17 @@ const AnimatedRoutes = () => {
                       <AdminPage />
                     </DashboardLayout>
                   </AdminRoute>
+                }
+              />
+              {/* convenience redirect: allow /admin/login to route to login with admin intent */}
+              <Route
+                path="/admin/login"
+                element={
+                  <Navigate
+                    to="/login"
+                    replace
+                    state={{ from: "/admin", intent: "admin" }}
+                  />
                 }
               />
               <Route
