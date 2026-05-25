@@ -75,6 +75,50 @@ router.post("/dev/seed-admin", async (req, res) => {
   }
 });
 
+// Protected seeding endpoint: create or promote an admin when provided a
+// matching secret in the `x-seed-secret` header. This allows creating an
+// admin in non-development environments without exposing an open endpoint.
+// To use:
+//  - Set `SEED_SECRET` in your environment (Render/production).
+//  - POST to /dev/seed-admin-protected with header `x-seed-secret: <secret>`
+// Example body: { "email": "admin@example.com", "password": "Admin12345!" }
+router.post("/dev/seed-admin-protected", async (req, res) => {
+  try {
+    const seedSecret = process.env.SEED_SECRET;
+    const incoming = req.headers["x-seed-secret"] || req.headers["x-seed_secret"];
+    if (!seedSecret) {
+      return res.status(403).json({ message: "Seed secret not configured on server" });
+    }
+    if (!incoming || incoming !== seedSecret) {
+      return res.status(403).json({ message: "Invalid seed secret" });
+    }
+
+    const User = require("../models/User");
+    const email = req.body?.email || "admin@example.com";
+    const password = req.body?.password || "Admin@123";
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = await User.create({
+        name: "Seeded Admin",
+        email,
+        password,
+        role: "admin",
+      });
+      return res.status(201).json({ message: "Admin created", user: { email: user.email } });
+    }
+    if (user.role !== "admin") {
+      user.role = "admin";
+      await user.save();
+      return res.json({ message: "Existing user promoted to admin", user: { email: user.email } });
+    }
+    return res.json({ message: "Admin already exists", user: { email: user.email } });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(err);
+    return res.status(500).json({ message: "Failed to seed admin (protected)" });
+  }
+});
+
 // Also expose a direct route for job-description search on the main router
 // (some environments may not surface nested router mounts reliably).
 const {
