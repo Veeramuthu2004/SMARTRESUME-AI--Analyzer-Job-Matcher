@@ -53,10 +53,18 @@ const issueAuthPayload = (user) => {
 
 const setRefreshCookie = (res, token) => {
   const maxAge = 7 * 24 * 60 * 60 * 1000; // default 7 days
+  // For cross-site requests (frontend hosted on a different origin
+  // such as Vercel previews), the refresh cookie must be set with
+  // SameSite=None and Secure=true so the browser will include it on
+  // XHR/fetch requests with credentials. In development use lax to
+  // simplify local testing.
+  const sameSite = env.nodeEnv === "production" ? "none" : "lax";
+  const secure = env.nodeEnv === "production";
+
   res.cookie("sra_refresh_token", token, {
     httpOnly: true,
-    secure: env.nodeEnv === "production",
-    sameSite: "lax",
+    secure,
+    sameSite,
     maxAge,
   });
 };
@@ -212,8 +220,14 @@ const logout = asyncHandler(async (req, res) => {
   if (incoming) {
     await RefreshToken.updateMany({ token: incoming }, { revoked: true });
   }
-  // clear cookie
-  res.clearCookie("sra_refresh_token");
+  // clear cookie - include cookie options to ensure it is removed in
+  // cross-site contexts (must match how it was set)
+  const clearOptions = {
+    httpOnly: true,
+    secure: env.nodeEnv === "production",
+    sameSite: env.nodeEnv === "production" ? "none" : "lax",
+  };
+  res.clearCookie("sra_refresh_token", clearOptions);
   return res.json({ loggedOut: true });
 });
 
