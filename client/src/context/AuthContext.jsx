@@ -47,6 +47,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const clearAuth = useCallback(() => {
+    // Attempt to clear server-side session (httpOnly cookie) but do not
+    // block UI if the call fails — perform it asynchronously.
+    try {
+      authService.logout().catch(() => {});
+    } catch (e) {
+      // ignore
+    }
+
     localStorage.removeItem("sra_access_token");
     localStorage.removeItem("sra_refresh_token");
     setUser(null);
