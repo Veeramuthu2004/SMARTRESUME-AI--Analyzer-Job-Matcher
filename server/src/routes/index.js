@@ -85,9 +85,12 @@ router.post("/dev/seed-admin", async (req, res) => {
 router.post("/dev/seed-admin-protected", async (req, res) => {
   try {
     const seedSecret = process.env.SEED_SECRET;
-    const incoming = req.headers["x-seed-secret"] || req.headers["x-seed_secret"];
+    const incoming =
+      req.headers["x-seed-secret"] || req.headers["x-seed_secret"];
     if (!seedSecret) {
-      return res.status(403).json({ message: "Seed secret not configured on server" });
+      return res
+        .status(403)
+        .json({ message: "Seed secret not configured on server" });
     }
     if (!incoming || incoming !== seedSecret) {
       return res.status(403).json({ message: "Invalid seed secret" });
@@ -104,18 +107,28 @@ router.post("/dev/seed-admin-protected", async (req, res) => {
         password,
         role: "admin",
       });
-      return res.status(201).json({ message: "Admin created", user: { email: user.email } });
+      return res
+        .status(201)
+        .json({ message: "Admin created", user: { email: user.email } });
     }
     if (user.role !== "admin") {
       user.role = "admin";
       await user.save();
-      return res.json({ message: "Existing user promoted to admin", user: { email: user.email } });
+      return res.json({
+        message: "Existing user promoted to admin",
+        user: { email: user.email },
+      });
     }
-    return res.json({ message: "Admin already exists", user: { email: user.email } });
+    return res.json({
+      message: "Admin already exists",
+      user: { email: user.email },
+    });
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error(err);
-    return res.status(500).json({ message: "Failed to seed admin (protected)" });
+    return res
+      .status(500)
+      .json({ message: "Failed to seed admin (protected)" });
   }
 });
 
