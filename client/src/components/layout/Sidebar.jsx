@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import {
@@ -45,9 +45,19 @@ export const Sidebar = ({ mobileOpen = false, onClose = () => {} }) => {
   const location = useLocation();
   const isAdmin = user?.role === "admin";
   const items = isAdmin ? adminItems : userItems;
+  const prevPathRef = useRef(location.pathname);
 
   useEffect(() => {
-    if (mobileOpen) onClose();
+    const prevPath = prevPathRef.current;
+    const currentPath = location.pathname;
+
+    // Only auto-close the mobile drawer when navigation actually changes,
+    // not when it is merely opened on the current page.
+    if (mobileOpen && prevPath !== currentPath) {
+      onClose();
+    }
+
+    prevPathRef.current = currentPath;
   }, [location.pathname, mobileOpen, onClose]);
 
   useEffect(() => {

@@ -30,6 +30,24 @@ export const Navbar = () => {
   const isAdmin = user?.role === "admin";
   const isAdminRoute = location.pathname.startsWith("/admin");
   const showAdminChrome = isAdmin && isAdminRoute;
+  const mobileLinks = !user
+    ? links
+    : isAdmin
+      ? [
+          { to: "/admin/dashboard", label: "Admin Dashboard" },
+          { to: "/admin/users", label: "User Management" },
+          { to: "/admin/payments", label: "Payments" },
+          { to: "/admin/analytics", label: "Revenue Analytics" },
+          { to: "/admin/settings", label: "System Settings" },
+          { to: "/admin/support", label: "Support Tickets" },
+          { to: "/admin/maintenance", label: "Maintenance Mode" },
+        ]
+      : [
+          { to: "/dashboard", label: "Dashboard" },
+          { to: "/profile", label: "Profile" },
+          { to: "/settings", label: "Settings" },
+          { to: "/history", label: "Resume History" },
+        ];
 
   useEffect(() => {
     if (!isAdmin) return;
@@ -208,7 +226,7 @@ export const Navbar = () => {
       {mobileOpen && (
         <div className="border-t border-slate-200/70 px-4 pb-4 pt-2 md:hidden dark:border-slate-800/70">
           <div className="space-y-1">
-            {links.map((item) => (
+            {mobileLinks.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
@@ -227,6 +245,15 @@ export const Navbar = () => {
                 className="block rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-200/70 dark:text-slate-300 dark:hover:bg-slate-800/60"
               >
                 Login
+              </NavLink>
+            )}
+            {user && (
+              <NavLink
+                to="/login"
+                onClick={() => setMobileOpen(false)}
+                className="block rounded-lg px-3 py-2 text-sm text-rose-600 hover:bg-rose-500/10 dark:text-rose-300 dark:hover:bg-rose-500/10"
+              >
+                Logout
               </NavLink>
             )}
           </div>
