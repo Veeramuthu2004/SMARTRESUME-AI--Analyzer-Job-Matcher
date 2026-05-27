@@ -11,6 +11,15 @@ const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
 
+const isVercelOrigin = (origin) => {
+  try {
+    const url = new URL(origin);
+    return url.protocol === "https:" && url.hostname.endsWith(".vercel.app");
+  } catch {
+    return false;
+  }
+};
+
 const allowedOrigins = Array.from(
   new Set(
     [
@@ -26,13 +35,7 @@ const allowedOrigins = Array.from(
 const isAllowedCorsOrigin = (origin) => {
   if (!origin) return true;
   if (allowedOrigins.includes(origin)) return true;
-
-  try {
-    const url = new URL(origin);
-    return url.protocol === "https:" && url.hostname.endsWith(".vercel.app");
-  } catch {
-    return false;
-  }
+  return isVercelOrigin(origin);
 };
 
 // In development allow all origins to simplify local testing (dev tokens /

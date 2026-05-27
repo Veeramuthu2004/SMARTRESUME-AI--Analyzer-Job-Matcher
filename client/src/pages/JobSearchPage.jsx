@@ -12,6 +12,7 @@ import { emitAppRefresh } from "../lib/appEvents";
 import { useDebounce } from "../hooks/useDebounce";
 import { io } from "socket.io-client";
 import { normalizeJobDisplay } from "../utils/jobDisplay";
+import { apiOrigin } from "../services/api";
 
 export const JobSearchPage = () => {
   const [q, setQ] = useState("");
@@ -151,9 +152,7 @@ export const JobSearchPage = () => {
   useEffect(() => {
     let socket;
     try {
-      const apiBase = import.meta.env.VITE_API_BASE_URL
-        ? import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "")
-        : "http://127.0.0.1:5000";
+      const apiBase = apiOrigin || "http://127.0.0.1:5000";
       socket = io(apiBase, { transports: ["websocket"] });
       socket.on("job:new", (job) => {
         const normalizedJob = normalizeJobDisplay(job);

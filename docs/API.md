@@ -4,7 +4,8 @@ Base URL: `http://localhost:5000/api`
 
 ## Auth
 
-- `POST /auth/signup` - `{ name, email, password }`
+- `POST /auth/register` - `{ name, email, password }`
+- `POST /auth/signup` - `{ name, email, password }` (alias)
 - `POST /auth/login` - `{ email, password }`
 - `POST /auth/google` - `{ idToken }`
 - `POST /auth/forgot-password` - `{ email }`

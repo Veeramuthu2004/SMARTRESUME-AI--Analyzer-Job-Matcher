@@ -21,7 +21,7 @@
 - Build command: `npm run build`
 - Output directory: `dist`
 - Env vars:
-  - `VITE_API_BASE_URL=https://<your-backend-domain>/api`
+  - `VITE_API_URL=https://<your-backend-domain>/api`
   - `VITE_GOOGLE_CLIENT_ID=<id>`
 - The client also includes `client/vercel.json` for SPA rewrites.
 

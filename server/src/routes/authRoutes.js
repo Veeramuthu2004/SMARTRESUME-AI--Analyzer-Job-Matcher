@@ -6,17 +6,14 @@ const authController = require("../controllers/authController");
 
 const router = express.Router();
 
-router.post(
-  "/signup",
-  validate(
-    z.object({
-      name: z.string().min(2),
-      email: z.string().email(),
-      password: z.string().min(8),
-    }),
-  ),
-  authController.signup,
-);
+const signupSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+
+router.post("/signup", validate(signupSchema), authController.signup);
+router.post("/register", validate(signupSchema), authController.signup);
 
 router.post(
   "/login",

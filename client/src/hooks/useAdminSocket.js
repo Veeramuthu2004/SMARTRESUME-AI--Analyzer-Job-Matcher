@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { io } from "socket.io-client";
+import { apiOrigin } from "../services/api";
 
 let socket;
 
@@ -7,9 +8,9 @@ export function useAdminSocket() {
   useEffect(() => {
     try {
       const token = localStorage.getItem("sra_access_token");
-      const base = import.meta.env.VITE_API_BASE_URL
-        ? import.meta.env.VITE_API_BASE_URL.replace(/\/api$/, "")
-        : "https://smartresume-ai-analyzer-job-matcher-1.onrender.com";
+      const base =
+        apiOrigin ||
+        "https://smartresume-ai-analyzer-job-matcher-1.onrender.com";
 
       socket = io(base, {
         auth: { token },
