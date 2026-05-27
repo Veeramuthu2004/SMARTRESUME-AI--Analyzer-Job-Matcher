@@ -1,0 +1,63 @@
+name: Trigger Render Deploy
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy to Render and verify
+    runs-on: ubuntu-latest
+    env:
+      SERVICE_ID: srv-d8bclupkh4rs73a8e37g
+      BACKEND_URL: https://smartresume-ai-analyzer-job-matcher-2.onrender.com
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Trigger Render Deploy
+        id: trigger
+        run: |
+          echo "Triggering deploy for Render service $SERVICE_ID"
+          resp=$(curl -sSf -X POST "https://api.render.com/v1/services/$SERVICE_ID/deploys" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{"clearCache":false}')
+          echo "$resp" | jq .
+          deploy_id=$(echo "$resp" | jq -r .id)
+          echo "deploy_id=$deploy_id" >> $GITHUB_OUTPUT
+
+      - name: Poll Deploy Status
+        id: poll
+        run: |
+          deploy_id=${{ steps.trigger.outputs.deploy_id }}
+          echo "Polling deploy $deploy_id"
+          for i in {1..60}; do
+            status=$(curl -s -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" "https://api.render.com/v1/services/$SERVICE_ID/deploys/$deploy_id" | jq -r .state)
+            echo "status=$status"
+            if [[ "$status" == "SUCCESSFUL" ]]; then
+              echo "Deploy successful"
+              exit 0
+            fi
+            if [[ "$status" == "FAILED" || "$status" == "CANCELED" ]]; then
+              echo "Deploy finished with state: $status"
+              exit 2
+            fi
+            sleep 5
+          done
+          echo "Polling timed out"
+          exit 3
+
+      - name: Check Health Endpoint
+        if: ${{ success() }}
+        run: |
+          echo "Checking health at $BACKEND_URL/api/health"
+          curl -sS "$BACKEND_URL/api/health" | jq .
+
+      - name: Show recent deploy events (for debugging)
+        if: failure()
+        run: |
+          deploy_id=${{ steps.trigger.outputs.deploy_id }}
+          echo "Fetching events for deploy $deploy_id"
+          curl -s -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" "https://api.render.com/v1/deploys/$deploy_id/events" | jq . | tee deploy-events.json
