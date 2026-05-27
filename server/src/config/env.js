@@ -1,6 +1,11 @@
 const dotenv = require("dotenv");
 
-dotenv.config();
+// Only load .env files in non-production environments. On Render/Vercel,
+// the platform-provided environment variables must win over any committed
+// local .env values in the repository.
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
 
 const env = {
   nodeEnv: process.env.NODE_ENV || "development",
