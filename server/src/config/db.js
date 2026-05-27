@@ -10,9 +10,7 @@ const connectWithUri = async (uri) => {
   });
 
   // eslint-disable-next-line no-console
-  console.log(
-    `Connected MongoDB (${mongoose.connection.name}) at ${mongoose.connection.host}`,
-  );
+  console.log("MongoDB Connected");
   return mongoose.connection;
 };
 

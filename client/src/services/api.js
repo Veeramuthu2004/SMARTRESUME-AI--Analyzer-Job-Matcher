@@ -21,7 +21,6 @@ const shouldLogApi =
 
 const logApi = (...args) => {
   if (shouldLogApi) {
-    // eslint-disable-next-line no-console
     console.debug("[api]", ...args);
   }
 };

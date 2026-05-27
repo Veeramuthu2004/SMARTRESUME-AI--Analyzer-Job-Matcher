@@ -4,10 +4,10 @@ export const extractCompanyFromText = (text = "") => {
   const trimmed = text.trim();
 
   const patterns = [
-    /Company\s*[:\-]\s*([A-Z][\w &.\-]{1,60})/i,
-    /Employer\s*[:\-]\s*([A-Z][\w &.\-]{1,60})/i,
-    /at\s+([A-Z][\w &.\-]{1,60})(?:[.,\n]|$)/i,
-    /by\s+([A-Z][\w &.\-]{1,60})(?:[.,\n]|$)/i,
+    /Company\s*[:-]\s*([A-Z][\w &.-]{1,60})/i,
+    /Employer\s*[:-]\s*([A-Z][\w &.-]{1,60})/i,
+    /at\s+([A-Z][\w &.-]{1,60})(?:[.,\n]|$)/i,
+    /by\s+([A-Z][\w &.-]{1,60})(?:[.,\n]|$)/i,
   ];
 
   for (const re of patterns) {
@@ -16,7 +16,7 @@ export const extractCompanyFromText = (text = "") => {
   }
 
   const firstLine = trimmed.split(/\n/)[0] || "";
-  const tok = firstLine.match(/([A-Z][\w&.\-]+\s+[A-Z][\w&.\-]+)/);
+  const tok = firstLine.match(/([A-Z][\w&.-]+\s+[A-Z][\w&.-]+)/);
   if (tok && tok[1]) return tok[1].trim();
 
   return "";

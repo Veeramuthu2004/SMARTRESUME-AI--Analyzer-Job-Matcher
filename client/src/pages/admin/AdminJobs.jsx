@@ -9,6 +9,7 @@ import { FilterBar } from "../../components/ui/FilterBar";
 const PAGE_SIZE = 10;
 
 export default function AdminJobs() {
+  const { toast } = useToast();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -94,8 +95,6 @@ export default function AdminJobs() {
       setSaving(false);
     }
   };
-
-  const { toast } = useToast();
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmConfig, setConfirmConfig] = useState(null);

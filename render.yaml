@@ -15,6 +15,8 @@ services:
         value: 10000
       - key: CLIENT_URL
         sync: false
+      - key: MONGODB_URI
+        sync: false
       - key: MONGO_URI
         sync: false
       - key: JWT_SECRET
@@ -34,6 +36,8 @@ services:
       - key: GEMINI_API_URL
         sync: false
       - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
         sync: false
       - key: RAZORPAY_SECRET
         sync: false

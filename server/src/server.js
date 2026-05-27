@@ -7,7 +7,7 @@ const { init } = require("./services/socketService");
 const start = async () => {
   try {
     // eslint-disable-next-line no-console
-    console.log(`Environment mode: ${env.nodeEnv}`);
+    console.log("Environment Loaded");
     await connectDb();
     // In development, ensure there's a test admin account for interactive testing
     try {
@@ -87,7 +87,7 @@ const start = async () => {
 
     server.listen(env.port, () => {
       // eslint-disable-next-line no-console
-      console.log(`API running on port ${env.port}`);
+      console.log(`Server Running on port ${env.port}`);
     });
   } catch (error) {
     // eslint-disable-next-line no-console

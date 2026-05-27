@@ -14,9 +14,7 @@ const settingsRoutes = require("./settingsRoutes");
 
 const router = express.Router();
 
-router.get("/health", (_req, res) =>
-  res.json({ ok: true, service: "smart-resume-api" }),
-);
+router.get("/health", (_req, res) => res.json({ status: "ok" }));
 
 router.use("/auth", authRoutes);
 router.use("/resumes", resumeRoutes);
