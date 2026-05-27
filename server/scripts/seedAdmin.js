@@ -3,7 +3,14 @@ const env = require("../src/config/env");
 const User = require("../src/models/User");
 
 async function run() {
-  await mongoose.connect(env.mongoUri || "mongodb://127.0.0.1:27017/sra-dev");
+  const uri = process.env.MONGODB_URI || env.mongoUri || "";
+  if (!uri) {
+    console.error("MONGODB_URI is required to run this script.");
+    process.exit(1);
+  }
+  await mongoose.connect(uri, {
+    dbName: process.env.MONGO_DB_NAME || "smart_resume_ai",
+  });
 
   const email = "admin@example.com";
   const password = "Admin@123";
