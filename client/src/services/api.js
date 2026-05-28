@@ -3,10 +3,11 @@ import axios from "axios";
 const CURRENT_BACKEND_ORIGIN =
   "https://smartresume-ai-analyzer-job-matcher-2.onrender.com";
 
-const rawApiBaseUrl =
-  import.meta.env.VITE_API_URL ||
-  import.meta.env.VITE_API_BASE_URL ||
-  `${CURRENT_BACKEND_ORIGIN}/api`;
+const rawApiBaseUrl = import.meta.env.DEV
+  ? import.meta.env.VITE_API_URL ||
+    import.meta.env.VITE_API_BASE_URL ||
+    `${CURRENT_BACKEND_ORIGIN}/api`
+  : `${CURRENT_BACKEND_ORIGIN}/api`;
 
 const normalizeApiBaseUrl = (value) => String(value || "").replace(/\/+$/, "");
 
