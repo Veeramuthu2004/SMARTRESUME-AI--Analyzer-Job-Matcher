@@ -10,7 +10,7 @@ export function useAdminSocket() {
       const token = localStorage.getItem("sra_access_token");
       const base =
         apiOrigin ||
-        "https://smartresume-ai-analyzer-job-matcher-1.onrender.com";
+        "https://smartresume-ai-analyzer-job-matcher-2.onrender.com";
 
       socket = io(base, {
         auth: { token },

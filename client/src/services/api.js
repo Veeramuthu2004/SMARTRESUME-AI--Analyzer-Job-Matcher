@@ -3,7 +3,7 @@ import axios from "axios";
 const rawApiBaseUrl =
   import.meta.env.VITE_API_URL ||
   import.meta.env.VITE_API_BASE_URL ||
-  "https://smartresume-ai-analyzer-job-matcher-1.onrender.com/api";
+  "https://smartresume-ai-analyzer-job-matcher-2.onrender.com/api";
 
 const normalizeApiBaseUrl = (value) => String(value || "").replace(/\/+$/, "");
 
