@@ -1,13 +1,31 @@
 import axios from "axios";
 
+const CURRENT_BACKEND_ORIGIN =
+  "https://smartresume-ai-analyzer-job-matcher-2.onrender.com";
+
 const rawApiBaseUrl =
   import.meta.env.VITE_API_URL ||
   import.meta.env.VITE_API_BASE_URL ||
-  "https://smartresume-ai-analyzer-job-matcher-2.onrender.com/api";
+  `${CURRENT_BACKEND_ORIGIN}/api`;
 
 const normalizeApiBaseUrl = (value) => String(value || "").replace(/\/+$/, "");
 
-export const apiBaseUrl = normalizeApiBaseUrl(rawApiBaseUrl);
+const sanitizeApiBaseUrl = (value) => {
+  const normalized = normalizeApiBaseUrl(value);
+  if (!normalized) return `${CURRENT_BACKEND_ORIGIN}/api`;
+
+  if (
+    normalized.includes("smartresume-ai-analyzer-job-matcher-1.onrender.com") ||
+    normalized.includes("localhost") ||
+    normalized.includes("127.0.0.1")
+  ) {
+    return `${CURRENT_BACKEND_ORIGIN}/api`;
+  }
+
+  return normalized;
+};
+
+export const apiBaseUrl = sanitizeApiBaseUrl(rawApiBaseUrl);
 export const apiOrigin = apiBaseUrl.replace(/\/api\/?$/, "");
 
 const api = axios.create({
