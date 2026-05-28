@@ -3,7 +3,9 @@ import FormData from "form-data";
 import fs from "fs";
 import { io } from "socket.io-client";
 
-const API = process.env.API_BASE || "http://localhost:5000";
+const API =
+  process.env.API_BASE ||
+  "https://smartresume-ai-analyzer-job-matcher-2.onrender.com";
 
 async function wait(ms) {
   return new Promise((r) => setTimeout(r, ms));

@@ -18,7 +18,7 @@ const router = express.Router();
 router.get("/health", (_req, res) => {
   const mongodb =
     mongoose.connection.readyState === 1 ? "connected" : "disconnected";
-  return res.json({ status: "ok", mongodb });
+  return res.json({ status: "ok", server: "running", mongodb });
 });
 
 router.use("/auth", authRoutes);

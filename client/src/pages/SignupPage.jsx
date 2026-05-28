@@ -38,6 +38,14 @@ export const SignupPage = () => {
       // After creating account, navigate to login so user may sign in
       navigate("/login", { replace: true });
     } catch (e) {
+      if (!e?.response || e?.isNetworkError) {
+        setError(
+          e?.message?.includes("Unable to reach the API")
+            ? e.message
+            : "Backend unavailable. Please check your connection and try again.",
+        );
+        return;
+      }
       setError(getSignupErrorMessage(e));
     }
   };

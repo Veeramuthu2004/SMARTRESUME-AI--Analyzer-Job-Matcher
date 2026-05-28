@@ -40,7 +40,22 @@ export const LoginPage = () => {
         navigate("/dashboard", { replace: true });
       }
     } catch (e) {
-      setError(e.response?.data?.message || "Login failed");
+      const status = e?.response?.status;
+      const message =
+        e?.response?.data?.message || e?.message || "Login failed";
+      if (!status || e?.isNetworkError) {
+        setError(
+          message.includes("Unable to reach the API")
+            ? message
+            : "Backend unavailable. Please check your connection and try again.",
+        );
+        return;
+      }
+      if (status === 401) {
+        setError("Invalid email or password.");
+        return;
+      }
+      setError(message);
     }
   };
 
