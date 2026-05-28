@@ -12,7 +12,13 @@ const start = async () => {
         ? "Production Environment Loaded"
         : "Development Environment Loaded",
     );
-    await connectDb();
+    const dbConnection = await connectDb();
+    if (!dbConnection) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        "MongoDB not connected; starting backend in degraded mode (health endpoint will report disconnected).",
+      );
+    }
     // In development, ensure there's a test admin account for interactive testing
     try {
       if (process.env.NODE_ENV !== "production") {

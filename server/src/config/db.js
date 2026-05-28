@@ -36,7 +36,7 @@ const connectDb = async () => {
     // No URI provided
     // eslint-disable-next-line no-console
     console.error("No MongoDB connection string provided (MONGODB_URI).");
-    throw new Error("MONGODB_URI is required");
+    return null;
   }
 
   if (uri) {
@@ -62,10 +62,14 @@ const connectDb = async () => {
       }
     }
 
+    // In production, keep the process alive so the backend can still serve
+    // health checks and return a clear disconnected status instead of crash-looping.
     if (env.nodeEnv === "production") {
-      throw new Error(
-        `MongoDB connection failed after ${attempts} attempt(s): ${lastError?.message || "unknown error"}`,
+      // eslint-disable-next-line no-console
+      console.error(
+        `MongoDB unavailable after ${attempts} attempt(s): ${lastError?.message || "unknown error"}`,
       );
+      return null;
     }
   }
 

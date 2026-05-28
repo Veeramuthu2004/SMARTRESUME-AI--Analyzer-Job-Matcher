@@ -23,7 +23,6 @@ if (isProduction) {
     )}`;
     // eslint-disable-next-line no-console
     console.error(message);
-    throw new Error(message);
   }
 }
 
