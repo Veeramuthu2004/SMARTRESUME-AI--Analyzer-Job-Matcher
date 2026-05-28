@@ -47,11 +47,11 @@
 
 ## 7) GitHub Actions-based deploy (optional)
 
-This repo includes two workflows that will attempt to deploy automatically on push to `main`:
+This repo includes workflows that will attempt to deploy automatically on push to `main`:
 
-- `.github/workflows/deploy-render.yml` — triggers a Render deploy via the Render API. Requires repository secrets:
+- `.github/workflows/render-deploy.yml` — triggers a Render deploy via the Render API and verifies `/api/health`. Requires repository secrets:
   - `RENDER_API_KEY` — Render service API key
-  - `RENDER_SERVICE_ID` — The Render service id for the backend
+  - `RENDER_SERVICE_ID` — The Render service id for the backend (optional if the workflow hardcodes it)
 
 - `.github/workflows/deploy-vercel.yml` — builds the client and deploys to Vercel using the Vercel Action. Requires repository secrets:
   - `VERCEL_TOKEN`

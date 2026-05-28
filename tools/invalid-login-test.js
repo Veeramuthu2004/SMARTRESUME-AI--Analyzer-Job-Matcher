@@ -5,8 +5,11 @@ const payload = JSON.stringify({
   password: "wrongpassword",
 });
 
+const hostname =
+  process.env.API_HOST || "smartresume-ai-analyzer-job-matcher-2.onrender.com";
+
 const options = {
-  hostname: "smartresume-ai-analyzer-job-matcher-1.onrender.com",
+  hostname,
   port: 443,
   path: "/api/auth/login",
   method: "POST",
