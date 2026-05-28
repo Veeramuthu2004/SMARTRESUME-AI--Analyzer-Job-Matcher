@@ -7,7 +7,11 @@ import { Button } from "../components/ui/Button";
 import { useAuth } from "../context/AuthContext";
 
 export const SignupPage = () => {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ mode: "onTouched" });
   const { signup } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState("");
@@ -54,11 +58,14 @@ export const SignupPage = () => {
             </label>
             <Input
               placeholder="Jane Doe"
-              {...register("name")}
+              {...register("name", { required: "Full name is required" })}
               required
               autoComplete="name"
               aria-required
             />
+            {errors.name && (
+              <p className="text-sm text-rose-300">{errors.name.message}</p>
+            )}
           </div>
           <div className="space-y-1.5">
             <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
@@ -67,11 +74,20 @@ export const SignupPage = () => {
             <Input
               type="email"
               placeholder="you@company.com"
-              {...register("email")}
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Please enter a valid email address",
+                },
+              })}
               required
               autoComplete="email"
               aria-required
             />
+            {errors.email && (
+              <p className="text-sm text-rose-300">{errors.email.message}</p>
+            )}
           </div>
           <div className="space-y-1.5">
             <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
@@ -80,11 +96,20 @@ export const SignupPage = () => {
             <Input
               type="password"
               placeholder="Create password (min 8 chars)"
-              {...register("password")}
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must be at least 8 characters",
+                },
+              })}
               required
               autoComplete="new-password"
               aria-required
             />
+            {errors.password && (
+              <p className="text-sm text-rose-300">{errors.password.message}</p>
+            )}
           </div>
           {error && <p className="text-sm text-rose-300">{error}</p>}
           <Button className="w-full" size="lg" type="submit">
