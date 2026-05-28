@@ -4,6 +4,44 @@ const app = require("./app");
 const http = require("http");
 const { init } = require("./services/socketService");
 
+const ensureAdminAccounts = async () => {
+  const User = require("./models/User");
+  const adminSeeds = [
+    {
+      name: "Platform Admin",
+      email: "admin@smartresume.dev",
+      password: "Admin12345!",
+    },
+    {
+      name: "Admin Example",
+      email: "admin@example.com",
+      password: "Admin@123",
+    },
+  ];
+
+  for (const seed of adminSeeds) {
+    const existing = await User.findOne({
+      email: seed.email.toLowerCase(),
+    }).exec();
+    if (!existing) {
+      const user = new User({
+        name: seed.name,
+        email: seed.email,
+        password: seed.password,
+        role: "admin",
+      });
+      await user.save();
+      // eslint-disable-next-line no-console
+      console.log(`Seeded admin account: ${seed.email}`);
+    } else if (existing.role !== "admin") {
+      existing.role = "admin";
+      await existing.save();
+      // eslint-disable-next-line no-console
+      console.log(`Promoted existing account to admin: ${seed.email}`);
+    }
+  }
+};
+
 const start = async () => {
   try {
     // eslint-disable-next-line no-console
@@ -19,34 +57,13 @@ const start = async () => {
         "MongoDB not connected; starting backend in degraded mode (health endpoint will report disconnected).",
       );
     }
-    // In development, ensure there's a test admin account for interactive testing
+    // Ensure the standard admin test accounts exist so production login checks
+    // can succeed even on a fresh database.
     try {
-      if (process.env.NODE_ENV !== "production") {
-        // create a default admin if none exists
-        // require here so models are registered after mongoose connects
-        const User = require("./models/User");
-        const adminEmail = process.env.DEV_ADMIN_EMAIL || "admin@example.com";
-        const adminPassword = process.env.DEV_ADMIN_PASSWORD || "Admin@123";
-        const existing = await User.findOne({
-          email: adminEmail.toLowerCase(),
-        }).exec();
-        if (!existing) {
-          const u = new User({
-            name: "Administrator",
-            email: adminEmail,
-            password: adminPassword,
-            role: "admin",
-          });
-          await u.save();
-          // eslint-disable-next-line no-console
-          console.log(
-            `Created development admin: ${adminEmail} / ${adminPassword}`,
-          );
-        }
-      }
+      await ensureAdminAccounts();
     } catch (seedErr) {
       // eslint-disable-next-line no-console
-      console.warn("Dev admin seed failed:", seedErr.message);
+      console.warn("Admin seed failed:", seedErr.message);
     }
     const server = http.createServer(app);
 
