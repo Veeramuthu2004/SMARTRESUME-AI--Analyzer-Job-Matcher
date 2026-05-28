@@ -7,7 +7,11 @@ const { init } = require("./services/socketService");
 const start = async () => {
   try {
     // eslint-disable-next-line no-console
-    console.log("Environment Loaded");
+    console.log(
+      env.nodeEnv === "production"
+        ? "Production Environment Loaded"
+        : "Development Environment Loaded",
+    );
     await connectDb();
     // In development, ensure there's a test admin account for interactive testing
     try {

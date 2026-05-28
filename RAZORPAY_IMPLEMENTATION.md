@@ -285,8 +285,9 @@ Response: [{ orderId, paymentId, amount, status, createdAt, ... }]
    - RAZORPAY_KEY_ID = live key from dashboard
    - RAZORPAY_SECRET = live secret
    - JWT_SECRET = production secret
-   - MONGO_URI = Atlas connection string
-   - etc.
+
+- MONGODB_URI = Atlas connection string
+- etc.
 
 2. Deploy:
    ```bash

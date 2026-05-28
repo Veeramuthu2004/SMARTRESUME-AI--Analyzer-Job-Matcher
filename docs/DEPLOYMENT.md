@@ -4,14 +4,14 @@
 
 - Create cluster and database user
 - Add network access for backend platform IPs
-- Copy connection URI to `MONGODB_URI` (or `MONGO_URI`; both are supported)
+- Copy connection URI to `MONGODB_URI`
 
 ## 2) Backend (Render/Railway)
 
-- Root directory: `server`
-- Build command: `npm install`
-- Start command: `npm run start`
-- Environment variables: use `server/.env.example`
+- Root directory: repository root (`.`)
+- Build command: `npm install && npm run build`
+- Start command: `npm start`
+- Environment variables: use the backend values from `server/.env.example` and set them in Render/Vercel
 - Ensure `CLIENT_URL` points to deployed frontend
 - Preferred backend vars: `MONGODB_URI`, `JWT_SECRET`, `JWT_REFRESH_SECRET`, `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`
 - For Render, the repo also includes `render.yaml` with placeholder env wiring.

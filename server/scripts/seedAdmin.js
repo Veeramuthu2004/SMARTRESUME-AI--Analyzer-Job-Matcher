@@ -3,7 +3,7 @@ const env = require("../src/config/env");
 const User = require("../src/models/User");
 
 async function run() {
-  const uri = process.env.MONGODB_URI || env.mongoUri || "";
+  const uri = process.env.MONGODB_URI || "";
   if (!uri) {
     console.error("MONGODB_URI is required to run this script.");
     process.exit(1);

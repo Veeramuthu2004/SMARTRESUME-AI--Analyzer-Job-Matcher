@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const authRoutes = require("./authRoutes");
 const resumeRoutes = require("./resumeRoutes");
 const analysisRoutes = require("./analysisRoutes");
@@ -14,7 +15,11 @@ const settingsRoutes = require("./settingsRoutes");
 
 const router = express.Router();
 
-router.get("/health", (_req, res) => res.json({ status: "ok" }));
+router.get("/health", (_req, res) => {
+  const mongodb =
+    mongoose.connection.readyState === 1 ? "connected" : "disconnected";
+  return res.json({ status: "ok", mongodb });
+});
 
 router.use("/auth", authRoutes);
 router.use("/resumes", resumeRoutes);

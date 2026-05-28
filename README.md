@@ -11,7 +11,7 @@ Prerequisites
 1. Copy environment files
 
 - The server example env is at `server/.env.example`. Copy it to `server/.env` and fill in the values.
-  - Set `MONGO_URI` to your local MongoDB (e.g. `mongodb://localhost:27017/sra-dev`) or your Atlas connection string.
+  - Set `MONGODB_URI` to your local MongoDB (e.g. `mongodb://localhost:27017/sra-dev`) or your Atlas connection string.
 
 2. Install dependencies
 

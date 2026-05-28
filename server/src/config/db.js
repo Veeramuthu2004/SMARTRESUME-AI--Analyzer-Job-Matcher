@@ -4,6 +4,8 @@ const env = require("./env");
 
 let memoryServer;
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const maskUri = (uri) => {
   if (!uri) return "";
   try {
@@ -17,6 +19,9 @@ const maskUri = (uri) => {
 const connectWithUri = async (uri) => {
   await mongoose.connect(uri, {
     dbName: process.env.MONGO_DB_NAME || "smart_resume_ai",
+    serverSelectionTimeoutMS: 10000,
+    connectTimeoutMS: 10000,
+    maxPoolSize: 10,
   });
 
   // eslint-disable-next-line no-console
@@ -25,31 +30,42 @@ const connectWithUri = async (uri) => {
 };
 
 const connectDb = async () => {
-  const uri = process.env.MONGODB_URI || env.mongoUri || "";
+  const uri = process.env.MONGODB_URI || "";
 
   if (!uri) {
     // No URI provided
     // eslint-disable-next-line no-console
     console.error("No MongoDB connection string provided (MONGODB_URI).");
-    if (env.nodeEnv === "production") {
-      // In production we must fail fast
-      process.exit(1);
-    }
+    throw new Error("MONGODB_URI is required");
   }
 
   if (uri) {
-    // eslint-disable-next-line no-console
-    console.info(`Attempting MongoDB connection to: ${maskUri(uri)}`);
-    try {
-      return await connectWithUri(uri);
-    } catch (error) {
+    const attempts = env.nodeEnv === "production" ? 3 : 1;
+    let lastError;
+
+    for (let attempt = 1; attempt <= attempts; attempt += 1) {
       // eslint-disable-next-line no-console
-      console.error(`MongoDB connection failed: ${error.message}`);
-      if (env.nodeEnv === "production") {
-        // Fail fast in production so Render marks the deploy as failed
-        process.exit(1);
+      console.info(
+        `Attempting MongoDB connection (${attempt}/${attempts}) to: ${maskUri(uri)}`,
+      );
+      try {
+        return await connectWithUri(uri);
+      } catch (error) {
+        lastError = error;
+        // eslint-disable-next-line no-console
+        console.error(
+          `MongoDB connection attempt ${attempt} failed: ${error.message}`,
+        );
+        if (attempt < attempts) {
+          await sleep(1000 * attempt * attempt);
+        }
       }
-      // continue to fallbacks in non-production
+    }
+
+    if (env.nodeEnv === "production") {
+      throw new Error(
+        `MongoDB connection failed after ${attempts} attempt(s): ${lastError?.message || "unknown error"}`,
+      );
     }
   }
 
