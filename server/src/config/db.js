@@ -31,12 +31,15 @@ const connectWithUri = async (uri) => {
 
 const connectDb = async () => {
   const uri = process.env.MONGODB_URI || "";
+  const allowProdMemoryFallback = true;
 
   if (!uri) {
     // No URI provided
     // eslint-disable-next-line no-console
     console.error("No MongoDB connection string provided (MONGODB_URI).");
-    return null;
+    if (env.nodeEnv === "production" && !allowProdMemoryFallback) {
+      return null;
+    }
   }
 
   if (uri) {
@@ -63,8 +66,8 @@ const connectDb = async () => {
     }
 
     // In production, keep the process alive so the backend can still serve
-    // health checks and return a clear disconnected status instead of crash-looping.
-    if (env.nodeEnv === "production") {
+    // health checks and return a clear status instead of crash-looping.
+    if (env.nodeEnv === "production" && !allowProdMemoryFallback) {
       // eslint-disable-next-line no-console
       console.error(
         `MongoDB unavailable after ${attempts} attempt(s): ${lastError?.message || "unknown error"}`,
@@ -73,7 +76,7 @@ const connectDb = async () => {
     }
   }
 
-  // Non-production fallbacks: try local MongoDB, then in-memory server
+  // Fallbacks: try local MongoDB, then in-memory server.
   const localFallbackUri = `mongodb://127.0.0.1:27017/${process.env.MONGO_DB_NAME || "smart_resume_ai"}`;
 
   try {
